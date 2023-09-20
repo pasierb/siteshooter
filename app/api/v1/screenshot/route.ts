@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
-import { screenshot } from "./screenshot";
 import { sizePreset } from "@/lib/sizePresets";
+
+const CDN_BASE_URL = "https://cdn.siteshooter.app/";
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
@@ -11,9 +12,23 @@ export async function GET(request: Request) {
     return NextResponse.error();
   }
 
-  const url = new URL(urlRaw);
-  const buffer = await screenshot({ url, width: preset[0], height: preset[1] });
+  const screenshotUrl = await fetch(
+    " https://2qcip9gtv1.execute-api.eu-west-1.amazonaws.com/Prod/",
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        url: new URL(urlRaw).toString(),
+        width: preset[0],
+        height: preset[1],
+      }),
+    }
+  ).then((res) => res.text());
 
-  const res = new Response(buffer);
-  return res;
+  const url = new URL(screenshotUrl);
+  const cdnUrl = new URL(url.pathname, CDN_BASE_URL);
+
+  return Response.redirect(cdnUrl, 301);
 }
