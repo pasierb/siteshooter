@@ -5,6 +5,8 @@ const CDN_BASE_URL = "https://cdn.siteshooter.app/";
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
+  console.log(searchParams);
+
   const urlRaw = searchParams.get("url");
   const preset = sizePreset(searchParams.get("preset"));
 
@@ -23,6 +25,7 @@ export async function GET(request: Request) {
         url: new URL(urlRaw).toString(),
         width: preset[0],
         height: preset[1],
+        removeEl: searchParams.getAll("removeEl"),
       }),
     }
   ).then((res) => res.text());
