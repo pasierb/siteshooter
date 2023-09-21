@@ -24,10 +24,14 @@ export async function GET(request: Request) {
           Authorization: `Bearer ${LAMBDA_ACCESS_KEY}`,
         },
         body: JSON.stringify({
-          url: new URL(urlRaw).toString(),
+          url: new URL(decodeURIComponent(urlRaw)).toString(),
           width: preset[0],
           height: preset[1],
-          removeEl: searchParams.getAll("removeEl"),
+          removeEl: searchParams
+            .getAll("removeEl")
+            .map(el => el.trim())
+            .filter(el => el.length > 0)
+            .map(el => decodeURIComponent(el)),
         }),
       }
     )
