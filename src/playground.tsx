@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { Skeleton } from "@/components/ui/skeleton";
 import { ScreenshotForm } from "./screenshot-form";
 
 export const Playground = () => {
@@ -20,7 +21,13 @@ export const Playground = () => {
 
       {apiUrl !== null && <code>{apiUrl.toString()}</code>}
 
-      {previewUrl && <img src={previewUrl.toString()} alt="Screenshot preview" />}
+      <div>
+        {previewUrl ? (
+          <img src={previewUrl.toString()} alt="Screenshot preview" />
+        ) : (
+          <Skeleton className="w-64 h-64" />
+        )}
+      </div>
     </div>
   );
 };

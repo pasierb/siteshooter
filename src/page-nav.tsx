@@ -1,3 +1,5 @@
+import { Badge } from "@/components/ui/badge";
+
 export function PageNav() {
   return (
     <nav>
@@ -11,6 +13,7 @@ export function PageNav() {
               className="w-16 h-16"
             />
             <span className="text-2xl font-bold">Siteshooter</span>
+            <Badge variant="secondary" className="rotate-12">alpha</Badge>
           </a>
         </div>
       </div>

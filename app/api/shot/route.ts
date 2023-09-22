@@ -1,13 +1,25 @@
 import { NextResponse } from "next/server";
-import { sizePreset } from "@/lib/sizePresets";
+import {
+  screenshotSizePresets,
+  ScreenshotSizePreset,
+} from "@/lib/sizePresets";
 
 const CDN_BASE_URL = "https://cdn.siteshooter.app/";
 const { LAMBDA_ACCESS_KEY } = process.env;
 
+function parseScreenshotSizePreset(
+  preset: string | null
+): ScreenshotSizePreset {
+  if (!preset) return ScreenshotSizePreset.twitterCard;
+
+  return ScreenshotSizePreset[preset as keyof typeof ScreenshotSizePreset];
+}
+
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const urlRaw = searchParams.get("url");
-  const preset = sizePreset(searchParams.get("preset"));
+  const presetEnum = parseScreenshotSizePreset(searchParams.get("preset"));
+  const preset = screenshotSizePresets[presetEnum];
 
   if (!urlRaw) {
     return NextResponse.error();
@@ -25,14 +37,14 @@ export async function GET(request: Request) {
         },
         body: JSON.stringify({
           url: new URL(decodeURIComponent(urlRaw)).toString(),
-          width: preset[0],
-          height: preset[1],
+          width: preset.width,
+          height: preset.height,
           scrollIntoView: searchParams.get("scrollIntoView"),
           removeEl: searchParams
             .getAll("removeEl")
-            .map(el => el.trim())
-            .filter(el => el.length > 0)
-            .map(el => decodeURIComponent(el)),
+            .map((el) => el.trim())
+            .filter((el) => el.length > 0)
+            .map((el) => decodeURIComponent(el)),
         }),
       }
     )
