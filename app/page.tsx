@@ -13,9 +13,13 @@ export default function Home() {
 
         <p>
           As simple as
-          <code className="relative rounded bg-muted px-[0.3rem] py-[0.2rem] font-mono text-sm font-semibold">
-            https://www.siteshooter.app/api/shot?url=https://www.siteshooter.app
-          </code>
+          <a
+            href="https://www.siteshooter.app/api/shot?url=https://www.siteshooter.app"
+            target="_blank">
+            <code className="relative rounded bg-muted px-[0.3rem] py-[0.2rem] font-mono text-sm font-semibold">
+              https://www.siteshooter.app/api/shot?url=https://www.siteshooter.app
+            </code>
+          </a>
         </p>
 
         <Button asChild className="my-4">
