@@ -19,8 +19,11 @@ export const Playground = () => {
     <div>
       <ScreenshotForm onSubmit={handleSubmit} onPreview={handlePreview} />
 
-      {apiUrl !== null && <code>{apiUrl.toString()}</code>}
-
+      {apiUrl !== null && (
+        <code className="relative rounded bg-muted px-[0.3rem] py-[0.2rem] font-mono text-sm font-semibold">
+          {apiUrl.toString()}
+        </code>
+      )}
       <div>
         {previewUrl ? (
           <img src={previewUrl.toString()} alt="Screenshot preview" />

@@ -75,7 +75,10 @@ export function ScreenshotForm(props: ScreenshotFormProps) {
       url.searchParams.append("preset", values.preset);
     }
 
-    props.onSubmit(url);
+    url.searchParams.set("key", "YOUR_API_KEY");
+    props.onSubmit(new URL(url.toString()));
+
+    url.searchParams.delete("key");
     props.onPreview(fetch(url.toString()).then((res) => new URL(res.url)));
   }
 
@@ -122,7 +125,17 @@ export function ScreenshotForm(props: ScreenshotFormProps) {
                     <SelectContent>
                       {Object.keys(ScreenshotSizePreset).map((key) => (
                         <SelectItem key={key} value={key}>
-                          {key} ({screenshotSizePresets[key as ScreenshotSizePreset].width}x{screenshotSizePresets[key as ScreenshotSizePreset].height})
+                          {key} (
+                          {
+                            screenshotSizePresets[key as ScreenshotSizePreset]
+                              .width
+                          }
+                          x
+                          {
+                            screenshotSizePresets[key as ScreenshotSizePreset]
+                              .height
+                          }
+                          )
                         </SelectItem>
                       ))}
                     </SelectContent>
