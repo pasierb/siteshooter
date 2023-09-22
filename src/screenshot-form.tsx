@@ -15,6 +15,14 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Cross2Icon, PlusIcon, CameraIcon } from "@radix-ui/react-icons";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 
 const formSchema = z.object({
   url: z.string().min(11),
@@ -61,88 +69,96 @@ export function ScreenshotForm(props: ScreenshotFormProps) {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-        <FormField
-          control={form.control}
-          name="url"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>URL</FormLabel>
-              <FormControl>
-                <Input required placeholder="https://..." {...field} />
-              </FormControl>
+        <Card>
+          <CardHeader>
+            <CardTitle>Take a screenshot</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <FormField
+              control={form.control}
+              name="url"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>URL</FormLabel>
+                  <FormControl>
+                    <Input required placeholder="https://..." {...field} />
+                  </FormControl>
+                  <FormDescription>
+                    URL of the page you want to screenshot.
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="scrollIntoView"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Scroll into view (optional)</FormLabel>
+                  <FormControl>
+                    <Input placeholder="e.g. main" {...field} />
+                  </FormControl>
+                  <FormDescription>
+                    CSS Selector of the element you want to scroll into view.
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <fieldset>
+              <FormLabel>Remove element (optional)</FormLabel>
               <FormDescription>
-                URL of the page you want to screenshot.
+                CSS Selector of the element you want to remove
               </FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
 
-        <FormField
-          control={form.control}
-          name="scrollIntoView"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Scroll into view (optional)</FormLabel>
-              <FormControl>
-                <Input placeholder="e.g. main" {...field} />
-              </FormControl>
-              <FormDescription>
-                CSS Selector of the element you want to scroll into view.
-              </FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+              {fields.map((field, i) => (
+                <div className="py-2" key={field.id}>
+                  <FormField
+                    control={form.control}
+                    name="removeEl"
+                    render={({ field }) => (
+                      <FormItem>
+                        <div className="flex gap-2">
+                          <FormControl>
+                            <Input
+                              placeholder=""
+                              {...form.register(`removeEl.${i}.value`)}
+                            />
+                          </FormControl>
+                          <Button
+                            variant="ghost"
+                            type="button"
+                            onClick={() => remove(i)}
+                          >
+                            <Cross2Icon />
+                          </Button>
+                        </div>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+              ))}
 
-        <fieldset>
-          <FormLabel>Remove element (optional)</FormLabel>
-          <FormDescription>
-            CSS Selector of the element you want to remove
-          </FormDescription>
-
-          {fields.map((field, i) => (
-            <div className="py-2" key={field.id}>
-              <FormField
-                control={form.control}
-                name="removeEl"
-                render={({ field }) => (
-                  <FormItem>
-                    <div className="flex gap-2">
-                      <FormControl>
-                        <Input
-                          placeholder=""
-                          {...form.register(`removeEl.${i}.value`)}
-                        />
-                      </FormControl>
-                      <Button
-                        variant="ghost"
-                        type="button"
-                        onClick={() => remove(i)}
-                      >
-                        <Cross2Icon />
-                      </Button>
-                    </div>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
-          ))}
-
-          <Button
-            variant="outline"
-            role="button"
-            onClick={() => append({ id: 1, value: "" })}
-          >
-            <PlusIcon />
-          </Button>
-        </fieldset>
-
-        <Button type="submit" className="flex gap-2">
-          <CameraIcon />
-          Preview
-        </Button>
+              <Button
+                variant="outline"
+                role="button"
+                onClick={() => append({ id: 1, value: "" })}
+              >
+                <PlusIcon />
+              </Button>
+            </fieldset>
+          </CardContent>
+          <CardFooter>
+            <Button type="submit" className="flex gap-2">
+              <CameraIcon />
+              Preview
+            </Button>
+          </CardFooter>
+        </Card>
       </form>
     </Form>
   );

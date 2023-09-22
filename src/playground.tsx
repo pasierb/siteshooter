@@ -20,7 +20,7 @@ export const Playground = () => {
 
       {apiUrl !== null && <code>{apiUrl.toString()}</code>}
 
-      {previewUrl && <img src={previewUrl.toString()} />}
+      {previewUrl && <img src={previewUrl.toString()} alt="Screenshot preview" />}
     </div>
   );
 };
