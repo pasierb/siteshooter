@@ -27,6 +27,7 @@ export async function GET(request: Request) {
           url: new URL(decodeURIComponent(urlRaw)).toString(),
           width: preset[0],
           height: preset[1],
+          scrollIntoView: searchParams.get("scrollIntoView"),
           removeEl: searchParams
             .getAll("removeEl")
             .map(el => el.trim())

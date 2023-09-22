@@ -14,10 +14,12 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import { Cross2Icon, PlusIcon, CameraIcon } from "@radix-ui/react-icons";
 
 const formSchema = z.object({
   url: z.string().min(11),
   removeEl: z.array(z.object({ id: z.number(), value: z.string() })),
+  scrollIntoView: z.string().optional(),
 });
 
 interface ScreenshotFormProps {
@@ -29,7 +31,7 @@ export function ScreenshotForm(props: ScreenshotFormProps) {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      url: "https://",
+      url: "",
       removeEl: [],
     },
   });
@@ -39,7 +41,7 @@ export function ScreenshotForm(props: ScreenshotFormProps) {
   });
 
   function onSubmit(values: z.infer<typeof formSchema>) {
-    const url = new URL("/api/v1/screenshot", window.location.origin);
+    const url = new URL("/api/shot", window.location.origin);
 
     url.searchParams.append("url", values.url);
     values.removeEl
@@ -48,6 +50,9 @@ export function ScreenshotForm(props: ScreenshotFormProps) {
       .forEach((value) => {
         url.searchParams.append("removeEl", encodeURIComponent(value));
       });
+    if (values.scrollIntoView && values.scrollIntoView.length > 0) {
+      url.searchParams.append("scrollIntoView", values.scrollIntoView);
+    }
 
     props.onSubmit(url);
     props.onPreview(fetch(url.toString()).then((res) => new URL(res.url)));
@@ -63,7 +68,7 @@ export function ScreenshotForm(props: ScreenshotFormProps) {
             <FormItem>
               <FormLabel>URL</FormLabel>
               <FormControl>
-                <Input placeholder="https://" {...field} />
+                <Input required placeholder="https://..." {...field} />
               </FormControl>
               <FormDescription>
                 URL of the page you want to screenshot.
@@ -73,42 +78,71 @@ export function ScreenshotForm(props: ScreenshotFormProps) {
           )}
         />
 
+        <FormField
+          control={form.control}
+          name="scrollIntoView"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Scroll into view (optional)</FormLabel>
+              <FormControl>
+                <Input placeholder="e.g. main" {...field} />
+              </FormControl>
+              <FormDescription>
+                CSS Selector of the element you want to scroll into view.
+              </FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
         <fieldset>
-          <FormLabel>Remove element</FormLabel>
+          <FormLabel>Remove element (optional)</FormLabel>
           <FormDescription>
             CSS Selector of the element you want to remove
           </FormDescription>
 
           {fields.map((field, i) => (
-            <FormField
-              key={field.id}
-              control={form.control}
-              name="removeEl"
-              render={({ field }) => (
-                <FormItem>
-                  <div className="flex">
-                    <FormControl>
-                      <Input
-                        placeholder=""
-                        {...form.register(`removeEl.${i}.value`)}
-                      />
-                    </FormControl>
-                    <Button type="button" onClick={() => remove(i)}>
-                      Remove
-                    </Button>
-                  </div>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            <div className="py-2" key={field.id}>
+              <FormField
+                control={form.control}
+                name="removeEl"
+                render={({ field }) => (
+                  <FormItem>
+                    <div className="flex gap-2">
+                      <FormControl>
+                        <Input
+                          placeholder=""
+                          {...form.register(`removeEl.${i}.value`)}
+                        />
+                      </FormControl>
+                      <Button
+                        variant="ghost"
+                        type="button"
+                        onClick={() => remove(i)}
+                      >
+                        <Cross2Icon />
+                      </Button>
+                    </div>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
           ))}
 
-          <Button type="button" onClick={() => append({ id: 1, value: "" })}>
-            Add
+          <Button
+            variant="outline"
+            role="button"
+            onClick={() => append({ id: 1, value: "" })}
+          >
+            <PlusIcon />
           </Button>
         </fieldset>
 
-        <Button type="submit">Preview</Button>
+        <Button type="submit" className="flex gap-2">
+          <CameraIcon />
+          Preview
+        </Button>
       </form>
     </Form>
   );
