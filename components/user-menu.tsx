@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { SignInDialog } from "@/components/signin-dialog";
 import { PersonIcon } from "@radix-ui/react-icons";
@@ -24,6 +25,7 @@ import {
 
 export function UserMenu() {
   const [session, setSession] = useState<Session | null>(null);
+  const router = useRouter();
 
   useEffect(() => {
     supabase.auth
@@ -32,8 +34,12 @@ export function UserMenu() {
 
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange((_, session) => {
+    } = supabase.auth.onAuthStateChange((event, session) => {
       setSession(session);
+
+      if (event === "SIGNED_OUT") {
+        router.push("/");
+      }
     });
 
     return () => subscription?.unsubscribe();
