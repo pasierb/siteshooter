@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, PropsWithChildren } from "react";
+import { useRef, useState, PropsWithChildren, useEffect } from "react";
 import { Auth } from "@supabase/auth-ui-react";
 import { ThemeSupa, ThemeMinimal } from "@supabase/auth-ui-shared";
 import {
@@ -17,15 +17,32 @@ interface SignInDialogProps {}
 
 export function SignInDialog(props: PropsWithChildren<SignInDialogProps>) {
   const supabaseClient = useRef(supabase());
+  const [open, setOpen] = useState<boolean>(false);
+
+  useEffect(() => {
+    const {
+      data: { subscription },
+    } = supabaseClient.current.auth.onAuthStateChange((_, session) => {
+
+      if (session !== null) {
+        setOpen(false);
+      }
+      console.log("session", session);
+    });
+
+    return () => subscription?.unsubscribe();
+  }, []);
 
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>{props.children}</DialogTrigger>
       <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Sign in</DialogTitle>
+        </DialogHeader>
         <Auth
           supabaseClient={supabaseClient.current}
           appearance={{ theme: ThemeSupa }}
-          redirectTo="/"
           providers={["google"]}
         />
       </DialogContent>
