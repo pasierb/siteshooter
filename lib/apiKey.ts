@@ -19,8 +19,12 @@ export async function authenticateApiKey(key: string | null) {
     .eq("key", key)
     .single();
 
+  if (error) {
+    throw new Error(error.message);
+  }
+
   if (!data) {
-    throw new UnauthorizedError("Invalid key");
+    throw new UnauthorizedError("Invalid key" + JSON.stringify({ error }));
   }
 
   return data;

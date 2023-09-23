@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { SignInDialog } from "@/components/signin-dialog";
 import { PersonIcon } from "@radix-ui/react-icons";
@@ -51,9 +52,12 @@ export function UserMenu() {
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-56">
         <DropdownMenuLabel>My Account ({session.user.email})</DropdownMenuLabel>
-
+        <DropdownMenuGroup>
+          <DropdownMenuItem asChild>
+            <Link href="/profile">Profile</Link>
+          </DropdownMenuItem>
+        </DropdownMenuGroup>
         <DropdownMenuSeparator />
-
         <DropdownMenuGroup>
           <DropdownMenuItem onClick={() => handleSignOut()}>
             Sign out
