@@ -1,3 +1,8 @@
+interface SizePresetConfig {
+  width: number;
+  height: number;
+}
+
 export enum ScreenshotSizePreset {
   browserWindow = "browserWindow",
   twitterStream = "twitterStream",
@@ -8,7 +13,7 @@ export enum ScreenshotSizePreset {
 }
 
 export const screenshotSizePresets: {
-  [key in ScreenshotSizePreset]: { width: number; height: number };
+  [key in ScreenshotSizePreset]: SizePresetConfig;
 } = {
   // https://www.w3schools.com/browsers/browsers_display.asp
   [ScreenshotSizePreset.browserWindow]: { width: 1366, height: 768 },
