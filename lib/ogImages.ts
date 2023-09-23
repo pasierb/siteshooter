@@ -1,7 +1,7 @@
 import { ScreenshotSizePreset, screenshotSizePresets } from "@/lib/sizePresets";
-import { version } from "@/package.json";
+import packageJson from "@/package.json";
 
-const buildId = `v${version}`;
+const buildId = `v${packageJson.version}`;
 const apiKey =
   "1a25f1f0f8baa749f69708c1cca906981d921809672a7106e338a35e9a8278bb";
 
