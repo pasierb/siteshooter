@@ -13,6 +13,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { messagesGenerator } from "@/lib/loadingPhrases";
 import { cn } from "@/lib/utils";
+import { ScreenshotSizePreset } from "@/lib/sizePresets";
 
 function LoadingIndicator(props: { interval?: number; className?: string }) {
   const { interval = 2000, className = "" } = props;
@@ -39,8 +40,13 @@ function LoadingIndicator(props: { interval?: number; className?: string }) {
   );
 }
 
-export const Playground = () => {
-  const [previewUrl, setPreviewUrl] = useState<URL | null>(null);
+interface PlaygroundProps {
+  initialImageUrl?: URL;
+  initialUrl?: URL;
+}
+
+export const Playground = (props: PlaygroundProps) => {
+  const [previewUrl, setPreviewUrl] = useState<URL | null>(props.initialImageUrl || null);
   const [apiUrl, setApiUrl] = useState<URL | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [imageSize, setImageSize] = useState<[number, number] | null>(null);
@@ -56,7 +62,15 @@ export const Playground = () => {
   return (
     <div className="flex flex-col lg:flex-row gap-4">
       <div className="min-w-[33%]">
-        <ScreenshotForm onSubmit={handleSubmit} onPreview={handlePreview} />
+        <ScreenshotForm
+          onSubmit={handleSubmit}
+          onPreview={handlePreview}
+          initialValues={{
+            url: props.initialUrl?.toString() || "",
+            removeEl: [],
+            preset: ScreenshotSizePreset.twitterStream,
+          }}
+        />
       </div>
       <div className="grow h-full">
         <Card>

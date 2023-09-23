@@ -32,7 +32,7 @@ import {
 } from "@/components/ui/card";
 import { ScreenshotSizePreset, screenshotSizePresets } from "@/lib/sizePresets";
 
-const formSchema = z.object({
+export const formSchema = z.object({
   url: z.string().min(11),
   removeEl: z.array(z.object({ id: z.number(), value: z.string() })),
   preset: z.string().optional(),
@@ -42,14 +42,16 @@ const formSchema = z.object({
 interface ScreenshotFormProps {
   onPreview: (value: Promise<URL>) => void;
   onSubmit: (apiUrl: URL) => void;
+  initialValues?: z.infer<typeof formSchema>;
 }
 
 export function ScreenshotForm(props: ScreenshotFormProps) {
+  const { initialValues } = props;
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      url: "",
-      preset: ScreenshotSizePreset.browserWindow,
+      url: initialValues?.url ?? "",
+      preset: initialValues?.preset ?? ScreenshotSizePreset.browserWindow,
       removeEl: [],
     },
   });
