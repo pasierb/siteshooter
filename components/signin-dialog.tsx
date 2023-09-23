@@ -16,18 +16,16 @@ import { supabase } from "@/lib/supabaseClient";
 interface SignInDialogProps {}
 
 export function SignInDialog(props: PropsWithChildren<SignInDialogProps>) {
-  const supabaseClient = useRef(supabase());
+  const supabaseClient = useRef(supabase);
   const [open, setOpen] = useState<boolean>(false);
 
   useEffect(() => {
     const {
       data: { subscription },
     } = supabaseClient.current.auth.onAuthStateChange((_, session) => {
-
       if (session !== null) {
         setOpen(false);
       }
-      console.log("session", session);
     });
 
     return () => subscription?.unsubscribe();

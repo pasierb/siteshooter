@@ -1,6 +1,5 @@
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { SignInDialog } from "@/components/signin-dialog";
+import { UserMenu } from "@/components/user-menu";
 
 export function PageNav() {
   return (
@@ -22,9 +21,7 @@ export function PageNav() {
         </div>
 
         <div>
-          <SignInDialog>
-            <Button variant="outline">Sign in</Button>
-          </SignInDialog>
+          <UserMenu />
         </div>
       </div>
     </nav>
