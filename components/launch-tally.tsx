@@ -1,14 +1,21 @@
 "use client";
 
+import { useEffect } from "react";
 import Script from "next/script";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 
 export function LaunchTally() {
+  useEffect(() => {
+    if (window.Tally) {
+      window.Tally.loadEmbeds();
+    }
+  }, []);
+
   return (
     <>
       <Card>
         <CardHeader>
-            <h2 className="text-2xl font-bold">Siteshooter is going live!</h2>
+          <h2 className="text-2xl font-bold">Siteshooter is going live!</h2>
         </CardHeader>
         <CardContent>
           <iframe
