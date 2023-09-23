@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { ScreenshotForm } from "./screenshot-form";
 import { ImageIcon } from "@radix-ui/react-icons";
 import {
@@ -11,6 +11,33 @@ import {
   CardDescription,
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { messagesGenerator } from "@/lib/loadingPhrases";
+import { cn } from "@/lib/utils";
+
+function LoadingIndicator(props: { interval?: number; className?: string }) {
+  const { interval = 2000, className = "" } = props;
+  const nextMessageRef = useRef(messagesGenerator());
+  const [message, setMessage] = useState<string>(() =>
+    nextMessageRef.current()
+  );
+
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      const nextMessage = nextMessageRef.current();
+
+      setMessage(nextMessage);
+    }, interval);
+
+    return () => clearInterval(intervalId);
+  }, [interval]);
+
+  return (
+    <div className={cn("flex items-center justify-center gap-2", className)}>
+      <ImageIcon className="animate-bounce w-8 h-8" />
+      <span className="text-base">{message}</span>
+    </div>
+  );
+}
 
 export const Playground = () => {
   const [previewUrl, setPreviewUrl] = useState<URL | null>(null);
@@ -31,7 +58,7 @@ export const Playground = () => {
       <div className="min-w-[33%]">
         <ScreenshotForm onSubmit={handleSubmit} onPreview={handlePreview} />
       </div>
-      <div className="grow">
+      <div className="grow h-full">
         <Card>
           <CardHeader>
             <CardTitle>Preview</CardTitle>
@@ -53,7 +80,16 @@ export const Playground = () => {
               </div>
             )}
 
-            {isLoading && <ImageIcon className="animate-bounce w-8 h-8" />}
+            {isLoading && (
+              <div className="border-2 border-dashed">
+                <LoadingIndicator className="my-12 mx-auto" interval={3000} />
+              </div>
+            )}
+            {!isLoading && previewUrl === null && (
+              <div className="border-2 border-dashed">
+                <ImageIcon className="w-8 h-8 my-12 mx-auto" />
+              </div>
+            )}
             {!isLoading && previewUrl !== null && (
               <img
                 className="border-2 border-dashed"
