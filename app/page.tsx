@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { LaunchTally } from "@/src/launch-tally";
+import { LaunchTally } from "@/components/launch-tally";
 
 export default function Home() {
   return (

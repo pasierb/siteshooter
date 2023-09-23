@@ -1,4 +1,4 @@
-import { Playground } from "@/src/playground";
+import { Playground } from "@/components/playground";
 import type { Metadata } from "next";
 import { pageOgImages } from "@/lib/ogImages";
 import { metadata as layoutMetadata } from "@/app/layout";
