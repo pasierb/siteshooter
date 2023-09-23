@@ -80,7 +80,7 @@ export function ScreenshotForm(props: ScreenshotFormProps) {
     url.searchParams.set("key", "YOUR_API_KEY");
     props.onSubmit(new URL(url.toString()));
 
-    url.searchParams.delete("key");
+    url.searchParams.set("key", process.env.NEXT_PUBLIC_PREVIEW_API_KEY!);
     props.onPreview(fetch(url.toString()).then((res) => new URL(res.url)));
   }
 

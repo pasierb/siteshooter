@@ -2,8 +2,7 @@ import { ScreenshotSizePreset, screenshotSizePresets } from "@/lib/sizePresets";
 import packageJson from "@/package.json";
 
 const buildId = `v${packageJson.version}`;
-const apiKey =
-  "1a25f1f0f8baa749f69708c1cca906981d921809672a7106e338a35e9a8278bb";
+const apiKey = process.env.NEXT_PUBLIC_PREVIEW_API_KEY!;
 
 export function pageOgImages(slug: string) {
   return [

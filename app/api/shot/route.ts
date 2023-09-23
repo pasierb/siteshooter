@@ -7,7 +7,6 @@ import { UnauthorizedError } from "@/lib/errors";
 import { supabaseServiceRole } from "@/lib/supabaseClient";
 
 const CDN_BASE_URL = "https://cdn.siteshooter.app/";
-const NEXT_PUBLIC_PREVIEW_API_KEY = process.env.NEXT_PUBLIC_PREVIEW_API_KEY;
 
 function parseScreenshotSizePreset(
   preset: string | null
@@ -47,7 +46,7 @@ function getConfig(request: Request): ScreenshotConfig {
 }
 
 async function getSchotByKey(key: string) {
-  const { data } = await supabaseServiceRole()
+  const { data } = await supabaseServiceRole
     .from("shots")
     .select("*")
     .eq("image_key", key)
@@ -56,22 +55,11 @@ async function getSchotByKey(key: string) {
   return data;
 }
 
-function isSelfRequest(request: Request) {
-  const referer = request.headers.get("referer");
-
-  if (!referer) {
-    return false;
-  }
-
-  const hostname = new URL(referer).hostname;
-  return hostname === "www.siteshooter.app" || hostname === "localhost";
-}
+export const dynamic = "force-dynamic";
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
-  const apiKeyValue = isSelfRequest(request)
-    ? NEXT_PUBLIC_PREVIEW_API_KEY!
-    : searchParams.get("key");
+  const apiKeyValue = searchParams.get("key");
 
   try {
     const apiKey = await authenticateApiKey(apiKeyValue);
@@ -88,7 +76,7 @@ export async function GET(request: Request) {
 
       // Don't wait for this to finish.
       // TODO: Log errors.
-      supabaseServiceRole()
+      supabaseServiceRole
         .from("shots")
         .insert({
           api_key_id: apiKey.id,
