@@ -20,7 +20,10 @@ const initialUrl = new URL(initialImageUrl.searchParams.get("url")!);
 export default function PlaygroundPage() {
   return (
     <div className="container">
-      <Playground initialImageUrl={initialImageUrl} initialUrl={initialUrl} />
+      <Playground
+        initialImageUrl={initialImageUrl.toString()}
+        initialUrl={initialUrl.toString()}
+      />
     </div>
   );
 }

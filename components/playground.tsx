@@ -41,12 +41,14 @@ function LoadingIndicator(props: { interval?: number; className?: string }) {
 }
 
 interface PlaygroundProps {
-  initialImageUrl?: URL;
-  initialUrl?: URL;
+  initialImageUrl?: string;
+  initialUrl?: string;
 }
 
 export const Playground = (props: PlaygroundProps) => {
-  const [previewUrl, setPreviewUrl] = useState<URL | null>(props.initialImageUrl || null);
+  const [previewUrl, setPreviewUrl] = useState<URL | null>(
+    props.initialImageUrl ? new URL(props.initialImageUrl) : null
+  );
   const [apiUrl, setApiUrl] = useState<URL | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [imageSize, setImageSize] = useState<[number, number] | null>(null);
@@ -66,7 +68,7 @@ export const Playground = (props: PlaygroundProps) => {
           onSubmit={handleSubmit}
           onPreview={handlePreview}
           initialValues={{
-            url: props.initialUrl?.toString() || "",
+            url: props.initialUrl ?? "",
             removeEl: [],
             preset: ScreenshotSizePreset.twitterStream,
           }}
