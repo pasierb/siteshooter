@@ -80,7 +80,7 @@ export const Playground = (props: PlaygroundProps) => {
             <CardTitle>Preview</CardTitle>
             <CardDescription>
               {apiUrl !== null && (
-                <code className="relative rounded bg-muted px-[0.3rem] py-[0.2rem] font-mono text-sm font-semibold">
+                <code className="relative rounded bg-muted px-[0.3rem] py-[0.2rem] font-mono text-sm font-semibold break-all">
                   {apiUrl.toString()}
                 </code>
               )}
