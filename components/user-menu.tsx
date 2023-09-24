@@ -8,6 +8,7 @@ import { SignInDialog } from "@/components/signin-dialog";
 import { PersonIcon } from "@radix-ui/react-icons";
 import type { Session } from "@supabase/supabase-js";
 import { supabase } from "@/lib/supabaseClient";
+import { useSession } from "@/lib/useSession";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -24,26 +25,14 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 export function UserMenu() {
-  const [session, setSession] = useState<Session | null>(null);
   const router = useRouter();
-
-  useEffect(() => {
-    supabase.auth
-      .getSession()
-      .then(({ data: { session } }) => setSession(session));
-
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange((event, session) => {
-      setSession(session);
-
+  const { session } = useSession({
+    onAuthChange: (event, session) => {
       if (event === "SIGNED_OUT") {
         router.push("/");
       }
-    });
-
-    return () => subscription?.unsubscribe();
-  }, []);
+    },
+  });
 
   const handleSignOut = () => {
     supabase.auth.signOut();

@@ -1,6 +1,8 @@
 "use client";
 
 import { useForm, useFieldArray } from "react-hook-form";
+import { useAuthKeys } from "@/lib/useAuthKey";
+import { useSession } from "@/lib/useSession";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { Button } from "@/components/ui/button";
@@ -59,6 +61,8 @@ export function ScreenshotForm(props: ScreenshotFormProps) {
     control: form.control,
     name: "removeEl",
   });
+  const authKeys = useAuthKeys();
+  const { session } = useSession();
 
   function onSubmit(values: z.infer<typeof formSchema>) {
     const url = new URL("/api/shot", window.location.origin);
@@ -77,10 +81,14 @@ export function ScreenshotForm(props: ScreenshotFormProps) {
       url.searchParams.append("preset", values.preset);
     }
 
-    url.searchParams.set("key", "YOUR_API_KEY");
+    // TODO: Use the first API key for now.
+    url.searchParams.set("key", authKeys[0]?.key ?? "YOUR_API_KEY");
     props.onSubmit(new URL(url.toString()));
 
-    url.searchParams.set("key", process.env.NEXT_PUBLIC_PREVIEW_API_KEY!);
+    // Use preview API key if previewing for not logged in users.
+    if (!session) {
+      url.searchParams.set("key", process.env.NEXT_PUBLIC_PREVIEW_API_KEY!);
+    }
     props.onPreview(fetch(url.toString()).then((res) => new URL(res.url)));
   }
 
