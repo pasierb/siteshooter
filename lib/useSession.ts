@@ -12,15 +12,15 @@ export function useSession({ onAuthChange }: UseSessionProps = {}) {
   const [session, setSession] = useState<Session | null>(null);
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session }, error }) => {
-      setSession(session);
+    supabase.auth.getSession().then(({ data, error }) => {
+      setSession(data.session);
     });
 
-    supabase.auth.onAuthStateChange((event, session) => {
-      setSession(session);
-      onAuthChange?.(event, session);
+    supabase.auth.onAuthStateChange((event, _session) => {
+      setSession(_session);
+      onAuthChange?.(event, _session);
     });
-  }, []);
+  }, [onAuthChange]);
 
   return { session };
 }
