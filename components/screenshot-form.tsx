@@ -89,6 +89,7 @@ export function ScreenshotForm(props: ScreenshotFormProps) {
     if (!session) {
       url.searchParams.set("key", process.env.NEXT_PUBLIC_PREVIEW_API_KEY!);
     }
+
     props.onPreview(fetch(url.toString()).then((res) => new URL(res.url)));
   }
 
@@ -107,7 +108,7 @@ export function ScreenshotForm(props: ScreenshotFormProps) {
                 <FormItem className="my-8">
                   <FormLabel>URL</FormLabel>
                   <FormControl>
-                    <Input required placeholder="https://..." {...field} />
+                    <Input required placeholder="https://..." type="url" {...field} />
                   </FormControl>
                   <FormDescription>
                     URL of the page you want to screenshot.

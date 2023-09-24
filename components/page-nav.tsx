@@ -22,6 +22,12 @@ export function PageNav() {
         </div>
 
         <div>
+          <Link href="/playground" className="font-semibold">
+            Playground
+          </Link>
+        </div>
+
+        <div>
           <UserMenu />
         </div>
       </div>

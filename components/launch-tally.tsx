@@ -1,15 +1,22 @@
 "use client";
 
-import { useEffect } from "react";
+import { useRef, useEffect } from "react";
 import Script from "next/script";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 
 export function LaunchTally() {
-  useEffect(() => {
-    if (window.Tally) {
-      window.Tally.loadEmbeds();
-    }
-  }, []);
+  const iframeRef = useRef<HTMLIFrameElement>(null);
+
+  // useEffect(() => {
+  //   if (
+  //     window.Tally &&
+  //     iframeRef.current?.getAttribute("data-tally-embed-widget-initialized") !==
+  //       "1"
+  //   ) {
+  //     console.log("loading tally");
+  //     window.Tally.loadEmbeds();
+  //   }
+  // }, []);
 
   return (
     <>
@@ -19,6 +26,7 @@ export function LaunchTally() {
         </CardHeader>
         <CardContent>
           <iframe
+            ref={iframeRef}
             data-tally-src="https://tally.so/embed/n0BXXj?alignLeft=1&hideTitle=1&transparentBackground=1&dynamicHeight=1"
             loading="lazy"
             width="100%"
@@ -30,13 +38,15 @@ export function LaunchTally() {
           ></iframe>
         </CardContent>
       </Card>
-      <Script
-        id="tally-js"
-        src="https://tally.so/widgets/embed.js"
-        onLoad={() => {
-          window.Tally.loadEmbeds();
-        }}
-      />
+      {(
+        <Script
+          id="tally-js"
+          src="https://tally.so/widgets/embed.js"
+          onLoad={() => {
+            window.Tally.loadEmbeds();
+          }}
+        />
+      )}
     </>
   );
 }
