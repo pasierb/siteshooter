@@ -7,6 +7,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   Form,
   FormControl,
@@ -39,6 +40,7 @@ export const formSchema = z.object({
   removeEl: z.array(z.object({ id: z.number(), value: z.string() })),
   preset: z.string().optional(),
   scrollIntoView: z.string().optional(),
+  invalidateCache: z.boolean().optional(),
 });
 
 interface ScreenshotFormProps {
@@ -80,17 +82,25 @@ export function ScreenshotForm(props: ScreenshotFormProps) {
     if (values.preset) {
       url.searchParams.append("preset", values.preset);
     }
-
-    // TODO: Use the first API key for now.
-    url.searchParams.set("key", authKeys[0]?.key ?? "YOUR_API_KEY");
-    props.onSubmit(new URL(url.toString()));
-
-    // Use preview API key if previewing for not logged in users.
-    if (!session) {
-      url.searchParams.set("key", process.env.NEXT_PUBLIC_PREVIEW_API_KEY!);
+    if (values.invalidateCache) {
+      url.searchParams.append("invalidateCache", "1");
+      form.setValue("invalidateCache", false);
     }
 
+    // Use preview API key if previewing for not logged in users.
+    url.searchParams.set(
+      "key",
+      authKeys[0]?.key ?? process.env.NEXT_PUBLIC_PREVIEW_API_KEY!
+    );
     props.onPreview(fetch(url.toString()).then((res) => new URL(res.url)));
+
+    if (!session) {
+      url.searchParams.set("key", "YOUR_API_KEY");
+    }
+    // TODO: Use the first API key for now.
+    // Remove `invalidateCache` param to prevent accidental cache invalidation.
+    url.searchParams.delete("invalidateCache");
+    props.onSubmit(new URL(url.toString()));
   }
 
   return (
@@ -98,7 +108,7 @@ export function ScreenshotForm(props: ScreenshotFormProps) {
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
         <Card>
           <CardHeader>
-            <CardTitle>Take a screenshot</CardTitle>
+            <CardTitle>Playground</CardTitle>
           </CardHeader>
           <CardContent>
             <FormField
@@ -108,7 +118,12 @@ export function ScreenshotForm(props: ScreenshotFormProps) {
                 <FormItem className="my-8">
                   <FormLabel>URL</FormLabel>
                   <FormControl>
-                    <Input required placeholder="https://..." type="url" {...field} />
+                    <Input
+                      required
+                      placeholder="https://..."
+                      type="url"
+                      {...field}
+                    />
                   </FormControl>
                   <FormDescription>
                     URL of the page you want to screenshot.
@@ -217,6 +232,27 @@ export function ScreenshotForm(props: ScreenshotFormProps) {
                 <PlusIcon />
               </Button>
             </fieldset>
+
+            <FormField
+              control={form.control}
+              name="invalidateCache"
+              render={({ field }) => (
+                <FormItem className="my-8 flex flex-row items-start space-x-3 space-y-0">
+                  <FormControl>
+                    <Checkbox
+                      checked={field.value}
+                      onCheckedChange={field.onChange}
+                    />
+                  </FormControl>
+                  <div className="space-y-1 leading-none">
+                    <FormLabel>Invalidate cache</FormLabel>
+                    <FormDescription>
+                      Force a fresh screenshot by invalidating the cache.
+                    </FormDescription>
+                  </div>
+                </FormItem>
+              )}
+            />
           </CardContent>
           <CardFooter>
             <Button type="submit" className="flex gap-2">

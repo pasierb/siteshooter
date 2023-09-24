@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import { pageOgImages } from "@/lib/ogImages";
 import { metadata as layoutMetadata } from "@/app/layout";
 
-const ogImages = pageOgImages("/playground?v=111");
+const ogImages = pageOgImages("/playground");
 
 export const metadata: Metadata = {
   ...layoutMetadata,

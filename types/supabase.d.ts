@@ -20,7 +20,7 @@ export interface Database {
         Insert: {
           created_at?: string
           id?: string
-          key: string
+          key?: string
           last_used_at?: string | null
           user_id: string
         }
@@ -48,6 +48,7 @@ export interface Database {
           id: string
           image_key: string
           image_url: string
+          updated_at: string
           user_id: string
         }
         Insert: {
@@ -57,6 +58,7 @@ export interface Database {
           id?: string
           image_key: string
           image_url: string
+          updated_at?: string
           user_id: string
         }
         Update: {
@@ -66,6 +68,7 @@ export interface Database {
           id?: string
           image_key?: string
           image_url?: string
+          updated_at?: string
           user_id?: string
         }
         Relationships: [
