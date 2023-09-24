@@ -20,7 +20,7 @@ export function useSession({ onAuthChange }: UseSessionProps = {}) {
       setSession(_session);
       onAuthChange?.(event, _session);
     });
-  }, [onAuthChange]);
+  }, [onAuthChange, setSession]);
 
   return { session };
 }

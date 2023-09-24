@@ -2,7 +2,8 @@
 
 import { useState, useRef, useEffect } from "react";
 import { ScreenshotForm } from "./screenshot-form";
-import { ImageIcon } from "@radix-ui/react-icons";
+import { CopyToClipboard } from "react-copy-to-clipboard";
+import { ImageIcon, ClipboardCopyIcon } from "@radix-ui/react-icons";
 import {
   Card,
   CardHeader,
@@ -11,6 +12,8 @@ import {
   CardDescription,
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { CopyButton } from "@/components/copy-button";
 import { messagesGenerator } from "@/lib/loadingPhrases";
 import { cn } from "@/lib/utils";
 import { ScreenshotSizePreset } from "@/lib/sizePresets";
@@ -80,9 +83,12 @@ export const Playground = (props: PlaygroundProps) => {
             <CardTitle>Preview</CardTitle>
             <CardDescription>
               {apiUrl !== null && (
-                <code className="relative rounded bg-muted px-[0.3rem] py-[0.2rem] font-mono text-sm font-semibold break-all">
-                  {apiUrl.toString()}
-                </code>
+                <>
+                  <code className="relative rounded bg-muted px-[0.3rem] py-[0.2rem] font-mono text-sm font-semibold break-all">
+                    {apiUrl.toString()}
+                  </code>
+                  <CopyButton textToCopy={apiUrl.toString()} />
+                </>
               )}
             </CardDescription>
           </CardHeader>

@@ -20,7 +20,7 @@ export function useAuthKeys() {
       .then(({ data, error }) => {
         setApiKeys(data || []);
       });
-  }, [session]);
+  }, [session, setApiKeys]);
 
   return apiKeys;
 }
