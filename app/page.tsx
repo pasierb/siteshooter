@@ -29,10 +29,10 @@ export default function Home() {
         <AlertTitle>Coming soon!</AlertTitle>
         <AlertDescription>
           You are currently viewing a pre-release version of Siteshooter. While
-          we're excited to show you a glimpse of what's coming, please note that
-          this version might not represent the final product's full
-          functionality or features. Mark your calendars for our official launch
-          on <strong>October 1st, 2023</strong>!
+          we&rsquo;re excited to show you a glimpse of what&rsquo;s coming,
+          please note that this version might not represent the final
+          product&rsquo;s full functionality or features. Mark your calendars
+          for our official launch on <strong>October 1st, 2023</strong>!
         </AlertDescription>
       </Alert>
 
