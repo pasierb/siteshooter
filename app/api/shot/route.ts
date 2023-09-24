@@ -94,6 +94,8 @@ export async function GET(request: Request) {
     if (e instanceof UnauthorizedError) {
       return new Response(e.message, { status: 401 });
     }
+    
+    console.error(e);
 
     return NextResponse.error();
   }

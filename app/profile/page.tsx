@@ -15,7 +15,10 @@ export default function ProfilePage() {
       <Card>
         <CardHeader>
           <CardTitle>API keys</CardTitle>
-          <CardDescription>API keys grant access to the api. Put key as a query parameter.</CardDescription>
+          <CardDescription>
+            API keys provide access to the API. Include the key as a query
+            parameter with the name `key`.
+          </CardDescription>
         </CardHeader>
         <CardContent>
           <ApiKeysTable />

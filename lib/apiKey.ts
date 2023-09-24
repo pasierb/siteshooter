@@ -16,16 +16,15 @@ export async function authenticateApiKey(key: string | null) {
   const { data, error } = await supabaseServiceRole
     .from("api_keys")
     .select("*")
-    .eq("key", key)
-    .single();
+    .eq("key", key);
 
   if (error) {
     throw new Error(error.message);
   }
 
-  if (!data) {
+  if (!data || data.length === 0) {
     throw new UnauthorizedError("Invalid key" + JSON.stringify({ error }));
   }
 
-  return data;
+  return data[0];
 }
