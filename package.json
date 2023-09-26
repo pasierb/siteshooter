@@ -44,6 +44,7 @@
   },
   "devDependencies": {
     "@flydotio/dockerfile": "^0.4.10",
+    "@tailwindcss/typography": "^0.5.10",
     "@types/react-copy-to-clipboard": "^5.0.4",
     "supabase": "^1.99.5"
   }

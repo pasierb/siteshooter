@@ -60,7 +60,7 @@ export default function Home() {
         </Button>
       </header>
 
-      <section className="my-20 prose">
+      <section className="my-20">
         <div className="mx-auto max-w-2xl lg:mx-0">
           <h2 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
             🚀 Why Siteshooter?
