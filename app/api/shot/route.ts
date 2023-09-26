@@ -122,7 +122,6 @@ export async function GET(request: Request) {
       const { data: existingShot, error } = await supabaseServiceRole
         .from("shots")
         .insert({
-          api_key_id: apiKey.id,
           image_key: imageKey,
           image_url: screenshotUrl.toString(),
           config: JSON.parse(JSON.stringify(config)), // TODO: Find a better way to do this.
