@@ -27,7 +27,7 @@ export function ShotsList() {
     supabase
       .from("shots")
       .select("*")
-      .order("created_at", { ascending: false })
+      .order("updated_at", { ascending: false })
       .limit(50)
       .then(({ data }) => setShots(data as unknown as Shot[]));
   }, [setShots]);

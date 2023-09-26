@@ -16,14 +16,14 @@ import {
 
 type ApiKey = Database["public"]["Tables"]["api_keys"]["Row"];
 
-type ApiKeyWithShotsCount = ApiKey & { shots: [{ count: number }] };
+type ApiKeyWithShotsCount = ApiKey & { shot_invocations: [{ count: number }] };
 
 export function ApiKeysTable() {
   const [apiKeys, setApiKeys] = useState<ApiKeyWithShotsCount[]>([]);
   useEffect(() => {
     supabase
       .from("api_keys")
-      .select("*, shots(count)")
+      .select("*, shot_invocations(count)")
       .then(({ data }) =>
         setApiKeys(data as unknown as ApiKeyWithShotsCount[])
       );
@@ -44,7 +44,7 @@ export function ApiKeysTable() {
             <TableRow key={apiKey.id}>
               <TableCell>{apiKey.key}</TableCell>
               <TableCell className="text-right">
-                {apiKey.shots[0]?.count}
+                {apiKey.shot_invocations[0]?.count}
               </TableCell>
               <TableCell>{apiKey.last_used_at}</TableCell>
             </TableRow>

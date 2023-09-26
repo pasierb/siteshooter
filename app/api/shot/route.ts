@@ -5,8 +5,12 @@ import { createScreenshot, ScreenshotConfig } from "@/lib/screenshotApi";
 import { simpleHash } from "@/lib/hash";
 import { UnauthorizedError } from "@/lib/errors";
 import { supabaseServiceRole } from "@/lib/supabaseClient";
+import type { Database } from "@/types/supabase";
 
 const CDN_BASE_URL = "https://cdn.siteshooter.app/";
+
+type ApiKey = Database["public"]["Tables"]["api_keys"]["Row"];
+type Shot = Database["public"]["Tables"]["shots"]["Row"];
 
 function parseScreenshotSizePreset(
   preset: string | null
@@ -42,11 +46,12 @@ function getConfig(request: Request): Omit<ScreenshotConfig, "imageKey"> {
   return { ...config };
 }
 
-async function getSchotByKey(key: string) {
+async function getSchotByKey(key: string, userId: string) {
   const { data, error } = await supabaseServiceRole
     .from("shots")
     .select("*")
-    .eq("image_key", key);
+    .eq("image_key", key)
+    .eq("user_id", userId);
 
   if (error) {
     throw error;
@@ -68,6 +73,14 @@ function callScreenshotApi(
   return createScreenshot({ ...config, imageKey: apiImageKey });
 }
 
+function createInvocation(apiKey: ApiKey, shotId: string) {
+  return supabaseServiceRole.from("shot_invocations").insert({
+    api_key_id: apiKey.id,
+    user_id: apiKey.user_id,
+    shot_id: shotId,
+  });
+}
+
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const apiKeyValue = searchParams.get("key");
@@ -79,7 +92,7 @@ export async function GET(request: Request) {
 
     const config = getConfig(request);
     const imageKey = simpleHash(JSON.stringify(config));
-    const existingShot = await getSchotByKey(imageKey);
+    const existingShot = await getSchotByKey(imageKey, apiKey.user_id);
     const updatedAt =
       existingShot !== null && !invalidateCache
         ? new Date(existingShot.updated_at)
@@ -90,27 +103,41 @@ export async function GET(request: Request) {
       if (invalidateCache) {
         screenshotUrl = await callScreenshotApi(config, updatedAt);
 
-        await supabaseServiceRole
-          .from("shots")
-          .update({
-            updated_at: updatedAt.toISOString(),
-            image_url: screenshotUrl.toString(),
-          })
-          .eq("image_key", imageKey);
+        await Promise.all([
+          supabaseServiceRole
+            .from("shots")
+            .update({
+              updated_at: updatedAt.toISOString(),
+              image_url: screenshotUrl.toString(),
+            })
+            .eq("image_key", imageKey),
+          createInvocation(apiKey, existingShot.id),
+        ]);
       } else {
         screenshotUrl = new URL(existingShot.image_url);
       }
     } else {
       screenshotUrl = await callScreenshotApi(config, updatedAt);
 
-      await supabaseServiceRole.from("shots").insert({
-        api_key_id: apiKey.id,
-        image_key: imageKey,
-        image_url: screenshotUrl.toString(),
-        config: JSON.parse(JSON.stringify(config)), // TODO: Find a better way to do this.
-        user_id: apiKey.user_id,
-        updated_at: updatedAt.toISOString(),
-      });
+      const { data: existingShot, error } = await supabaseServiceRole
+        .from("shots")
+        .insert({
+          api_key_id: apiKey.id,
+          image_key: imageKey,
+          image_url: screenshotUrl.toString(),
+          config: JSON.parse(JSON.stringify(config)), // TODO: Find a better way to do this.
+          user_id: apiKey.user_id,
+          updated_at: updatedAt.toISOString(),
+        })
+        .select("id")
+        .single();
+
+      if (error) {
+        console.error(error);
+        throw error;
+      }
+
+      await createInvocation(apiKey, existingShot.id);
     }
 
     const cdnUrl = new URL(screenshotUrl.pathname, CDN_BASE_URL);

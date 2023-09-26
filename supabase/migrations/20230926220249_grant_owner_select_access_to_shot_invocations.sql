@@ -1,0 +1,1 @@
+create policy show_invocations_owner_read on public.shot_invocations for select using (auth.uid() = user_id);

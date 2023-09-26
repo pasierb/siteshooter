@@ -40,9 +40,51 @@ export interface Database {
           }
         ]
       }
-      shots: {
+      shot_invocations: {
         Row: {
           api_key_id: string
+          created_at: string
+          id: string
+          shot_id: string
+          user_id: string
+        }
+        Insert: {
+          api_key_id: string
+          created_at?: string
+          id?: string
+          shot_id: string
+          user_id: string
+        }
+        Update: {
+          api_key_id?: string
+          created_at?: string
+          id?: string
+          shot_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "shot_invocations_api_key_id_fkey"
+            columns: ["api_key_id"]
+            referencedRelation: "api_keys"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "shot_invocations_shot_id_fkey"
+            columns: ["shot_id"]
+            referencedRelation: "shots"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "shot_invocations_user_id_fkey"
+            columns: ["user_id"]
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
+      shots: {
+        Row: {
           config: Json
           created_at: string
           id: string
@@ -52,7 +94,6 @@ export interface Database {
           user_id: string
         }
         Insert: {
-          api_key_id: string
           config: Json
           created_at?: string
           id?: string
@@ -62,7 +103,6 @@ export interface Database {
           user_id: string
         }
         Update: {
-          api_key_id?: string
           config?: Json
           created_at?: string
           id?: string
@@ -72,12 +112,6 @@ export interface Database {
           user_id?: string
         }
         Relationships: [
-          {
-            foreignKeyName: "shots_api_key_id_fkey"
-            columns: ["api_key_id"]
-            referencedRelation: "api_keys"
-            referencedColumns: ["id"]
-          },
           {
             foreignKeyName: "shots_user_id_fkey"
             columns: ["user_id"]
