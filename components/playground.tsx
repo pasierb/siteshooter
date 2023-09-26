@@ -122,6 +122,7 @@ export const Playground = (props: PlaygroundProps) => {
                   ]);
                 }}
                 src={previewUrl!.toString()}
+                style={{ maxWidth: imageSize ? imageSize[0] : "100%" }}
                 alt="Screenshot preview"
               />
             )}
