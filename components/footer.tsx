@@ -7,6 +7,7 @@ interface NavigationItem {
 const navigation: { main: NavigationItem[]; social: NavigationItem[] } = {
   main: [
     { name: "Privacy", href: "/privacy" },
+    { name: "Terms of service", href: "/terms" },
   ],
   social: [],
 };
